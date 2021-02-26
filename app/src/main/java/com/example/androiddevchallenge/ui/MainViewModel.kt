@@ -27,11 +27,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    val dogRepository: DogRepository
+    private val dogRepository: DogRepository
 ) : ViewModel() {
 
     private val _dogs = MutableLiveData(emptyList<Dog>())
     val dogs: LiveData<List<Dog>> = _dogs
+
+    private val _dog: MutableLiveData<Dog> = MutableLiveData()
+    val dog: LiveData<Dog> = _dog
 
     init {
         viewModelScope.launch {
@@ -41,5 +44,8 @@ class MainViewModel @Inject constructor(
     }
 
     fun onDogClick(id: Int) {
+        _dogs.value?.find { it.id == id }?.let {
+            _dog.postValue(it)
+        }
     }
 }
