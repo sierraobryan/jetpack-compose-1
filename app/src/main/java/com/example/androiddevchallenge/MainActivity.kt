@@ -19,36 +19,18 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import coil.transform.CircleCropTransformation
-import com.example.androiddevchallenge.data.Dog
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.androiddevchallenge.ui.MainViewModel
+import com.example.androiddevchallenge.ui.screens.DetailsScreen
+import com.example.androiddevchallenge.ui.screens.DogListScreen
+import com.example.androiddevchallenge.ui.screens.ListContent
+import com.example.androiddevchallenge.ui.screens.Screen
 import com.example.androiddevchallenge.ui.theme.MyTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dev.chrisbanes.accompanist.coil.CoilImage
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -67,56 +49,13 @@ class MainActivity : AppCompatActivity() {
 
 @Composable
 fun MyApp(mainViewModel: MainViewModel) {
-    val dogs = mainViewModel.dogs.observeAsState()
-    MyContent(dogs = dogs.value ?: emptyList(), onDogClick = { mainViewModel.onDogClick(it) })
-}
-
-@Composable
-fun MyContent(dogs: List<Dog>, onDogClick: (Int) -> Unit) {
-    val scrollState = rememberLazyListState()
-    Surface(color = MaterialTheme.colors.background) {
-        LazyColumn(state = scrollState) {
-            items(dogs.size) { index ->
-                if (index == 0) {
-                    // add header
-                }
-                DogRow(
-                    dog = dogs[index],
-                    onDogClick = onDogClick
-                )
-            }
+    val navController = rememberNavController()
+    NavHost(navController, startDestination = Screen.List.route) { // this: NavGraphBuilder
+        composable(Screen.List.route) {
+            DogListScreen(navController, mainViewModel)
         }
-    }
-}
-
-@Composable
-fun DogRow(dog: Dog, onDogClick: (Int) -> Unit, modifier: Modifier = Modifier) {
-    Row(
-        modifier
-            .padding(8.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(color = MaterialTheme.colors.surface)
-            .clickable(onClick = { onDogClick.invoke(dog.id) })
-            .padding(16.dp)
-            .fillMaxWidth()
-    ) {
-        CoilImage(
-            data = dog.imageUrl,
-            requestBuilder = {
-                transformations(CircleCropTransformation())
-            },
-            contentDescription = "Android Logo",
-            modifier = Modifier.size(50.dp)
-        )
-        Column(
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .align(Alignment.CenterVertically)
-        ) {
-            Text(dog.name, fontWeight = FontWeight.Bold)
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(dog.breed, style = MaterialTheme.typography.body2)
-            }
+        composable(Screen.Details.route) {
+            DetailsScreen(mainViewModel)
         }
     }
 }
@@ -125,7 +64,7 @@ fun DogRow(dog: Dog, onDogClick: (Int) -> Unit, modifier: Modifier = Modifier) {
 @Composable
 fun LightPreview() {
     MyTheme {
-        MyContent(dogs = emptyList(), {})
+        ListContent(dogs = emptyList(), {})
     }
 }
 
@@ -133,6 +72,6 @@ fun LightPreview() {
 @Composable
 fun DarkPreview() {
     MyTheme(darkTheme = true) {
-        MyContent(dogs = emptyList(), {})
+        ListContent(dogs = emptyList(), {})
     }
 }
