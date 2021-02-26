@@ -6,7 +6,7 @@
 
 
 ## :scroll: Description
-Puppy finder app with real adoptable puppies near Cincinnati, OH, written in Jetpack Compose!
+Puppy finder app with real adoptable puppies near Cincinnati, OH, written in Jetpack Compose! Some could say now I'm a GDE - Good Dog Expert. 
 
 
 ## :bulb: Motivation and Context
