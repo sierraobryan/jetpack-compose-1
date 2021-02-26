@@ -18,15 +18,14 @@ package com.example.androiddevchallenge.ui.screens
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
@@ -68,14 +67,14 @@ fun DetailsContent(dog: Dog?) {
 @Composable
 fun DogDetails(dog: Dog, modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val scrollState = rememberLazyListState()
+    val scrollState = rememberScrollState()
     Column(
         modifier
             .padding(8.dp)
             .background(color = MaterialTheme.colors.surface)
             .padding(16.dp)
             .fillMaxWidth()
-            .scrollable(state = scrollState, orientation = Orientation.Vertical)
+            .verticalScroll(scrollState)
     ) {
         Row(
             modifier
